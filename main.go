@@ -56,10 +56,12 @@ const (
 //    // import _ "github.com/jinzhu/gorm/dialects/sqlite"
 //    // import _ "github.com/jinzhu/gorm/dialects/mssql"
 func Open(dialect string, args ...interface{}) (db *DB, err error) {
+	fmt.Println("start to open")
 	if len(args) == 0 {
 		err = errors.New("invalid database source")
 		return nil, err
 	}
+	fmt.Println("args ok")
 	var source string
 	var dbSQL SQLCommon
 	var ownDbSQL bool
@@ -74,6 +76,7 @@ func Open(dialect string, args ...interface{}) (db *DB, err error) {
 			source = args[1].(string)
 		}
 		dbSQL, err = sql.Open(driver, source)
+		fmt.Println("sql error:", err)
 		ownDbSQL = true
 	case SQLCommon:
 		dbSQL = value
@@ -95,6 +98,7 @@ func Open(dialect string, args ...interface{}) (db *DB, err error) {
 	// Send a ping to make sure the database connection is alive.
 	if d, ok := dbSQL.(*sql.DB); ok {
 		if err = d.Ping(); err != nil && ownDbSQL {
+			fmt.Println("database is not alive", err)
 			d.Close()
 		}
 	}
