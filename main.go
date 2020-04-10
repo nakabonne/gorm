@@ -77,6 +77,7 @@ func Open(dialect string, args ...interface{}) (db *DB, err error) {
 		}
 		dbSQL, err = sql.Open(driver, source)
 		fmt.Println("sql error:", err)
+		fmt.Println("is dbSQL nil?:", dbSQL == nil)
 		ownDbSQL = true
 	case SQLCommon:
 		dbSQL = value
@@ -97,11 +98,13 @@ func Open(dialect string, args ...interface{}) (db *DB, err error) {
 	}
 	// Send a ping to make sure the database connection is alive.
 	if d, ok := dbSQL.(*sql.DB); ok {
+		fmt.Println("ok?", d)
 		if err = d.Ping(); err != nil && ownDbSQL {
 			fmt.Println("database is not alive", err)
 			d.Close()
 		}
 	}
+	fmt.Println("normally")
 	return
 }
 
